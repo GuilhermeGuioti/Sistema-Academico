@@ -1,8 +1,6 @@
 package service;
 
 import entity.Enrollment;
-import entity.Student;
-import entity.Course;
 import exception.Exception;
 
 import java.util.ArrayList;
@@ -10,6 +8,12 @@ import java.util.List;
 
 public class EnrollmentService {
     private static final List<Enrollment> enrollments = new ArrayList<>();
+
+    public static void loadAll() {
+        List<Enrollment> loaded = FileService.loadEnrollments();
+        enrollments.clear();
+        enrollments.addAll(loaded);
+    }
 
     public static int generateIdEnrollment() {
         if(enrollments.isEmpty()){
@@ -33,6 +37,8 @@ public class EnrollmentService {
 
         newEnrollment.setIdEnrollment(generateIdEnrollment());
         enrollments.add(newEnrollment);
+
+        FileService.saveEnrollments(enrollments);
 
         return newEnrollment;
     }

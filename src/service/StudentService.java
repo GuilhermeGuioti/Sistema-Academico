@@ -11,6 +11,12 @@ import java.util.Random;
 public class StudentService {
     private static final List<Student> students = new ArrayList<>();
 
+    public static void loadAll() {
+        List<Student> loaded = FileService.loadStudents();
+        students.clear();
+        students.addAll(loaded);
+    }
+
     public static int genereteRA() {
         Random rand = new Random();
         int RA = -1;
@@ -37,6 +43,8 @@ public class StudentService {
         newStudent.setId(id);
 
         students.add(newStudent);
+
+        FileService.saveStudents(students);
 
         return newStudent;
     }

@@ -1,7 +1,5 @@
 package entity;
 
-import service.EnrollmentService;
-
 public class Enrollment {
     private int idEnrollment;
     private int idStudent;

@@ -4,9 +4,17 @@ import java.util.Scanner;
 import java.util.List;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        try {
+            StudentService.loadAll();
+            CourseService.loadAll();
+            EnrollmentService.loadAll();
+        } catch (Exception e) {
+            System.err.println("Aviso: Não foi possível carregar os dados iniciais.");
+        }
+
         int option = -1;
 
         while (option != 0) {
@@ -92,7 +100,8 @@ public class Main {
         System.out.println("[3] Ver Alunos da Disciplina");
         System.out.println("[4] Editar Disciplina");
         System.out.println("[5] Excluir Disciplina");
-        System.out.print("[0] Voltar");
+        System.out.println("[0] Voltar");
+        System.out.print("Escolha: ");
         int op = Integer.parseInt(scanner.nextLine());
 
         try {
@@ -142,7 +151,8 @@ public class Main {
         System.out.println("[2] Lançar Nota");
         System.out.println("[3] Boletim/Média");
         System.out.println("[4] Desmatricular Aluno");
-        System.out.print("[0] Voltar");
+        System.out.println("[0] Voltar");
+        System.out.print("Escolha: ");
         int op = Integer.parseInt(scanner.nextLine());
 
         try {

@@ -9,6 +9,12 @@ import java.util.List;
 public class CourseService {
     private static final List<Course> courses = new ArrayList<>();
 
+    public static void loadAll() {
+        List<Course> loaded = FileService.loadCourses();
+        courses.clear();
+        courses.addAll(loaded);
+    }
+
     public static int generateIdCourse() {
         if(courses.isEmpty()){
             return 1;
@@ -40,6 +46,8 @@ public class CourseService {
         newCourse.setId(id);
 
         courses.add(newCourse);
+
+        FileService.saveCourses(courses);
 
         return newCourse;
     }
