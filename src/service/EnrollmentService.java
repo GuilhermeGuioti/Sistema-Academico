@@ -21,6 +21,9 @@ public class EnrollmentService {
     }
 
     public static Enrollment save(Enrollment newEnrollment){
+        StudentService.findById(newEnrollment.getIdStudent());
+        CourseService.findById(newEnrollment.getIdCourse());
+
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getIdStudent() == newEnrollment.getIdStudent()
                     && enrollment.getIdCourse() == newEnrollment.getIdCourse()) {
@@ -80,5 +83,30 @@ public class EnrollmentService {
         Enrollment enrollment = findEnrollment(idStudent, idCourse);
 
         enrollments.remove(enrollment);
+    }
+
+    public static void updateGrade(int idStudent, int idCourse, int examNumber, double value){
+        Enrollment enrollment = findEnrollment(idStudent, idCourse);
+
+        if (value > 10 || value < 0) {
+            throw new Exception("A nota deve estar entre 0 e 10.");
+        }
+
+        if(examNumber == 1){
+            enrollment.setGrade1(value);
+        } else if(examNumber == 2){
+            enrollment.setGrade2(value);
+        } else{
+            throw new Exception("Número de prova inválido. Use 1 para P1 ou 2 para P2.");
+        }
+
+        double newAverage = (enrollment.getGrade1() + enrollment.getGrade2()) / 2;
+        enrollment.setAverage(newAverage);
+
+        if(newAverage >= 6){
+            enrollment.setStatus("Aprovado");
+        } else{
+            enrollment.setStatus("Reprovado");
+        }
     }
 }

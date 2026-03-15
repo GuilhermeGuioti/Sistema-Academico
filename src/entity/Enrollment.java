@@ -9,6 +9,7 @@ public class Enrollment {
     private double grade1;
     private double grade2;
     private double average;
+    private String status;
 
     public Enrollment(int idStudent, int idCourse) {
         this.idEnrollment = -1;
@@ -17,6 +18,7 @@ public class Enrollment {
         this.grade1 = 0.0;
         this.grade2 = 0.0;
         this.average = 0.0;
+        this.status = "Sem nota";
     }
 
     public Enrollment(int idEnrollment, int idStudent, int idCourse) {
@@ -64,12 +66,20 @@ public class Enrollment {
         this.grade2 = grade2;
     }
 
-    public double getaverage() {
+    public double getAverage() {
         return average;
     }
 
-    public void setaverage(double average) {
+    public void setAverage(double average) {
         this.average = average;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
