@@ -5,14 +5,11 @@ public class Student {
     private int id;
     private String name;
 
-    public Student(String name) {
-        this.id = -1;
-        this.name = name;
-    }
+    public Student() {}
 
     public Student(int id, String name) {
-        this(name);
         this.id = id;
+        this.name = name;
     }
 
     public int getId() {

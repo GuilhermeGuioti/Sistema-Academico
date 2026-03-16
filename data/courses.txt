@@ -1,0 +1,2 @@
+1;calculo 2;30.0;noturno
+2;jogos digitais;50.0;diurno

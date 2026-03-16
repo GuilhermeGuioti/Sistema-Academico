@@ -1,23 +1,18 @@
 package entity;
 
-import service.CourseService;
-
 public class Course {
     private int id;
     private String name;
     private double workload;
     private String period;
 
-    public Course(String name, double workload, String period) {
-        this.id = -1;
+    public Course() {}
+
+    public Course(int id, String name, double workload, String period) {
+        this.id = id;
         this.name = name;
         this.workload = workload;
         this.period = period;
-    }
-
-    public Course(int id, String name, double workload, String period) {
-        this(name, workload, period);
-        this.id = id;
     }
 
     public int getId() {

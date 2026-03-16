@@ -56,7 +56,11 @@ public class Main {
             if (op == 1) {
                 System.out.print("Nome do Aluno: ");
                 String name = scanner.nextLine();
-                Student s = StudentService.save(new Student(name));
+
+                Student s = new Student();
+                s.setName(name);
+
+                StudentService.save(s);
                 System.out.println("Sucesso: RA " + s.getId());
 
             } else if (op == 2) {
@@ -109,7 +113,13 @@ public class Main {
                 System.out.print("Nome: "); String n = scanner.nextLine();
                 System.out.print("Carga H.: "); double wh = Double.parseDouble(scanner.nextLine());
                 System.out.print("Período: "); String p = scanner.nextLine();
-                CourseService.save(new Course(n, wh, p));
+
+                Course course = new Course();
+                course.setName(n);
+                course.setWorkload(wh);
+                course.setPeriod(p);
+
+                CourseService.save(course);
                 System.out.println("Disciplina cadastrada!");
 
             } else if (op == 2) {
@@ -159,7 +169,12 @@ public class Main {
             if (op == 1) {
                 System.out.print("RA: "); int ra = Integer.parseInt(scanner.nextLine());
                 System.out.print("ID Disciplina: "); int idC = Integer.parseInt(scanner.nextLine());
-                EnrollmentService.save(new Enrollment(ra, idC));
+
+                Enrollment enrollment = new Enrollment();
+                enrollment.setIdStudent(ra);
+                enrollment.setIdCourse(idC);
+
+                EnrollmentService.save(enrollment);
                 System.out.println("Matriculado!");
 
             } else if (op == 2) {

@@ -9,19 +9,16 @@ public class Enrollment {
     private double average;
     private String status;
 
-    public Enrollment(int idStudent, int idCourse) {
-        this.idEnrollment = -1;
+    public Enrollment(){}
+
+    public Enrollment(int idEnrollment, int idStudent, int idCourse) {
+        this.idEnrollment = idEnrollment;
         this.idStudent = idStudent;
         this.idCourse = idCourse;
         this.grade1 = 0.0;
         this.grade2 = 0.0;
         this.average = 0.0;
         this.status = "Sem nota";
-    }
-
-    public Enrollment(int idEnrollment, int idStudent, int idCourse) {
-        this(idStudent, idCourse);
-        this.idEnrollment = idEnrollment;
     }
 
     public int getIdEnrollment() {
