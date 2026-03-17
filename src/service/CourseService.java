@@ -74,6 +74,8 @@ public class CourseService {
         Course course = findById(id);
 
         courses.remove(course);
+
+        FileService.saveCourses(courses);
     }
 
     public static Course update(Course updatedData) {
@@ -90,6 +92,8 @@ public class CourseService {
         if (updatedData.getPeriod() != null && !updatedData.getPeriod().trim().isEmpty()) {
             course.setPeriod(updatedData.getPeriod());
         }
+
+        FileService.saveCourses(courses);
 
         return course;
     }

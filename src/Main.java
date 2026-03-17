@@ -59,8 +59,8 @@ public class Main {
 
                 Student s = new Student();
                 s.setName(name);
-
                 StudentService.save(s);
+
                 System.out.println("Sucesso: RA " + s.getId());
 
             } else if (op == 2) {
@@ -70,8 +70,10 @@ public class Main {
             } else if (op == 3) {
                 System.out.print("RA para consulta: ");
                 int ra = Integer.parseInt(scanner.nextLine());
+
                 Student s = StudentService.findById(ra);
                 System.out.println("\n=== PERFIL: " + s.getName() + " ===");
+
                 try {
                     List<Enrollment> m = EnrollmentService.findByStudent(ra);
                     m.forEach(e -> {
@@ -83,10 +85,18 @@ public class Main {
             } else if (op == 4) {
                 System.out.print("RA do Aluno: ");
                 int ra = Integer.parseInt(scanner.nextLine());
+
                 Student s = StudentService.findById(ra);
                 System.out.print("Novo nome (atual: " + s.getName() + "): ");
-                s.setName(scanner.nextLine());
-                System.out.println("Nome atualizado!");
+                String name = scanner.nextLine();
+
+                Student studentUpdated = new Student();
+                studentUpdated.setId(ra);
+                studentUpdated.setName(name);
+
+                StudentService.update(studentUpdated);
+
+                System.out.println("Nome atualizado para " + name);
 
             } else if (op == 5) {
                 System.out.print("RA para excluir: ");
@@ -110,14 +120,14 @@ public class Main {
 
         try {
             if (op == 1) {
-                System.out.print("Nome: "); String n = scanner.nextLine();
-                System.out.print("Carga H.: "); double wh = Double.parseDouble(scanner.nextLine());
-                System.out.print("Período: "); String p = scanner.nextLine();
+                System.out.print("Nome: "); String name = scanner.nextLine();
+                System.out.print("Carga H.: "); double workload = Double.parseDouble(scanner.nextLine());
+                System.out.print("Período: "); String period = scanner.nextLine();
 
                 Course course = new Course();
-                course.setName(n);
-                course.setWorkload(wh);
-                course.setPeriod(p);
+                course.setName(name);
+                course.setWorkload(workload);
+                course.setPeriod(period);
 
                 CourseService.save(course);
                 System.out.println("Disciplina cadastrada!");
@@ -141,9 +151,25 @@ public class Main {
             } else if (op == 4) {
                 System.out.print("ID da Disciplina: ");
                 int idC = Integer.parseInt(scanner.nextLine());
+
                 Course c = CourseService.findById(idC);
+
                 System.out.print("Novo nome (" + c.getName() + "): ");
-                c.setName(scanner.nextLine());
+                String name = scanner.nextLine();
+
+                System.out.print("Nova Carga Horária (" + c.getWorkload() + "): ");
+                String wordload = scanner.nextLine();
+
+                System.out.print("Novo Período (" + c.getPeriod() + "): ");
+                String period = scanner.nextLine();
+
+                Course courseUpdated = new Course();
+                courseUpdated.setId(idC);
+                courseUpdated.setName(name);
+                courseUpdated.setPeriod(period);
+
+                CourseService.update(courseUpdated);
+
                 System.out.println("Disciplina atualizada!");
 
             } else if (op == 5) {

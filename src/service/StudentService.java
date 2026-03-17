@@ -72,6 +72,8 @@ public class StudentService {
         Student student = findById(id);
 
         students.remove(student);
+
+        FileService.saveStudents(students);
     }
 
     public static Student update(Student updatedData){
@@ -80,6 +82,8 @@ public class StudentService {
         if (updatedData.getName() != null && !updatedData.getName().trim().isEmpty()) {
             student.setName(updatedData.getName());
         }
+
+        FileService.saveStudents(students);
 
         return student;
     }

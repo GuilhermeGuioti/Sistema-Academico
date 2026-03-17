@@ -89,6 +89,8 @@ public class EnrollmentService {
         Enrollment enrollment = findEnrollment(idStudent, idCourse);
 
         enrollments.remove(enrollment);
+
+        FileService.saveEnrollments(enrollments);
     }
 
     public static void updateGrade(int idStudent, int idCourse, int examNumber, double value){
@@ -114,5 +116,7 @@ public class EnrollmentService {
         } else{
             enrollment.setStatus("Reprovado");
         }
+
+        FileService.saveEnrollments(enrollments);
     }
 }
