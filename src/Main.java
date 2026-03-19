@@ -2,7 +2,7 @@ import entity.*;
 import service.*;
 import java.util.Scanner;
 import java.util.List;
-
+//teste
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
