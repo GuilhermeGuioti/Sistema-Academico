@@ -1,4 +1,5 @@
 1;calculo 2;30.0;noturno
 2;jogos digitais;50.0;diurno
-3;historia;30.0;not
+3;História;30.0;not
 4;nja];30.0;okf
+5;Sistemas da Informacao;30.0;Noturno
