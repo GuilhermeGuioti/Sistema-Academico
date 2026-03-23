@@ -3,3 +3,4 @@
 3;História;30.0;not
 4;nja];30.0;okf
 5;Sistemas da Informacao;30.0;Noturno
+6;Arduino;34.0;1 semestre

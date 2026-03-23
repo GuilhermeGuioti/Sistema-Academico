@@ -11,18 +11,22 @@ public class Main {
             StudentService.loadAll();
             CourseService.loadAll();
             EnrollmentService.loadAll();
+            System.out.println("[SISTEMA] Base de dados carregada com sucesso.");
         } catch (Exception e) {
-            System.err.println("Aviso: Não foi possível carregar os dados iniciais.");
+            System.err.println("[AVISO] Não foi possível carregar os dados iniciais. O sistema iniciará vazio.");
         }
 
         int option = -1;
 
         while (option != 0) {
-            System.out.println("\n=== SISTEMA ACADÊMICO ===");
+            System.out.println("\n=========================================");
+            System.out.println("           SISTEMA ACADÊMICO             ");
+            System.out.println("=========================================");
             System.out.println("1. Gerenciar Alunos");
             System.out.println("2. Gerenciar Disciplinas");
             System.out.println("3. Matrículas e Notas");
             System.out.println("0. Sair");
+            System.out.println("-----------------------------------------");
             System.out.print("Escolha uma opção: ");
 
             try {
@@ -32,13 +36,13 @@ public class Main {
                     case 1 -> studentMenu();
                     case 2 -> courseMenu();
                     case 3 -> enrollmentMenu();
-                    case 0 -> System.out.println("Encerrando sistema...");
-                    default -> System.out.println("Opção inválida!");
+                    case 0 -> System.out.println("\n[INFO] Encerrando o sistema... Até logo!");
+                    default -> System.out.println("[AVISO] Opção inválida! Tente novamente.");
                 }
             } catch (NumberFormatException e) {
-                System.err.println("\nEntrada inválida! Digite apenas números.");
+                System.err.println("\n[ERRO] Entrada inválida! Por favor, digite apenas números.");
             } catch (Exception e) {
-                System.err.println("\nERRO: " + e.getMessage());
+                System.err.println("\n[ERRO CRÍTICO] " + e.getMessage());
             }
         }
     }
@@ -47,13 +51,13 @@ public class Main {
         int op = -1;
 
         while (op != 0) {
-            System.out.println("\n--- GERENCIAR ALUNOS ---");
+            System.out.println("\n--- MENU: GERENCIAR ALUNOS ---");
             System.out.println("[1] Cadastrar Aluno");
             System.out.println("[2] Listar Todos");
             System.out.println("[3] Perfil/Consultar");
             System.out.println("[4] Editar Aluno");
             System.out.println("[5] Excluir Aluno");
-            System.out.println("[0] Voltar");
+            System.out.println("[0] Voltar ao Menu Principal");
             System.out.print("Escolha: ");
 
             try {
@@ -67,36 +71,41 @@ public class Main {
                     s.setName(name);
                     StudentService.save(s);
 
-                    System.out.println("Sucesso: RA " + s.getId());
+                    System.out.println("[SUCESSO] Aluno '" + s.getName() + "' cadastrado com o RA: " + s.getId());
 
                 } else if (op == 2) {
+                    System.out.println("\n--- LISTAGEM DE ALUNOS ---");
                     StudentService.findAll().forEach(s ->
                             System.out.println("RA: " + s.getId() + " | Nome: " + s.getName())
                     );
 
                 } else if (op == 3) {
-                    System.out.print("RA para consulta: ");
+                    System.out.print("Digite o RA para consulta: ");
                     int ra = Integer.parseInt(scanner.nextLine());
 
                     Student s = StudentService.findById(ra);
-                    System.out.println("\n=== PERFIL: " + s.getName() + " ===");
+                    System.out.println("\n=== PERFIL DO ALUNO ===");
+                    System.out.println("RA: " + s.getId());
+                    System.out.println("Nome: " + s.getName());
+                    System.out.println("Disciplinas:");
 
                     try {
                         List<Enrollment> m = EnrollmentService.findByStudent(ra);
+                        if (m.isEmpty()) throw new Exception();
                         m.forEach(e -> {
                             Course c = CourseService.findById(e.getIdCourse());
-                            System.out.println("- " + c.getName() + " (" + e.getStatus() + ")");
+                            System.out.println("  - " + c.getName() + " [Status: " + e.getStatus() + "]");
                         });
                     } catch (Exception e) {
-                        System.out.println("[Sem matrículas]");
+                        System.out.println("  [Nenhuma matrícula encontrada]");
                     }
 
                 } else if (op == 4) {
-                    System.out.print("RA do Aluno: ");
+                    System.out.print("RA do Aluno que deseja editar: ");
                     int ra = Integer.parseInt(scanner.nextLine());
 
                     Student s = StudentService.findById(ra);
-                    System.out.print("Novo nome (atual: " + s.getName() + "): ");
+                    System.out.print("Novo nome (Atual: " + s.getName() + "): ");
                     String name = scanner.nextLine();
 
                     Student studentUpdated = new Student();
@@ -104,23 +113,27 @@ public class Main {
                     studentUpdated.setName(name);
 
                     StudentService.update(studentUpdated);
-                    System.out.println("Nome atualizado para " + name);
+                    System.out.println("[SUCESSO] O aluno com RA " + ra + " agora se chama: " + name);
 
                 } else if (op == 5) {
-                    System.out.print("RA para excluir: ");
+                    System.out.print("RA do Aluno que deseja excluir: ");
                     int ra = Integer.parseInt(scanner.nextLine());
 
+                    // Buscamos o nome antes de deletar para uma mensagem mais completa
+                    Student s = StudentService.findById(ra);
+                    String oldName = s.getName();
+
                     StudentService.delete(ra);
-                    System.out.println("Aluno removido!");
+                    System.out.println("[SUCESSO] Aluno '" + oldName + "' (RA: " + ra + ") removido do sistema.");
 
                 } else if (op != 0) {
-                    System.out.println("Opção inválida!");
+                    System.out.println("[AVISO] Opção inválida!");
                 }
 
             } catch (NumberFormatException e) {
-                System.err.println("\nEntrada inválida! Digite apenas números.");
+                System.err.println("\n[ERRO] Entrada inválida! Digite apenas números.");
             } catch (Exception e) {
-                System.err.println("\nERRO ALUNO: " + e.getMessage());
+                System.err.println("\n[ERRO ALUNO] " + e.getMessage());
             }
         }
     }
@@ -129,24 +142,24 @@ public class Main {
         int op = -1;
 
         while (op != 0) {
-            System.out.println("\n--- GERENCIAR DISCIPLINAS ---");
+            System.out.println("\n--- MENU: GERENCIAR DISCIPLINAS ---");
             System.out.println("[1] Cadastrar Disciplina");
-            System.out.println("[2] Listar Todos");
-            System.out.println("[3] Ver Alunos da Disciplina");
+            System.out.println("[2] Listar Todas");
+            System.out.println("[3] Ver Alunos Matriculados");
             System.out.println("[4] Editar Disciplina");
             System.out.println("[5] Excluir Disciplina");
-            System.out.println("[0] Voltar");
+            System.out.println("[0] Voltar ao Menu Principal");
             System.out.print("Escolha: ");
 
             try {
                 op = Integer.parseInt(scanner.nextLine());
 
                 if (op == 1) {
-                    System.out.print("Nome: ");
+                    System.out.print("Nome da Disciplina: ");
                     String name = scanner.nextLine();
-                    System.out.print("Carga H.: ");
+                    System.out.print("Carga Horária: ");
                     double workload = Double.parseDouble(scanner.nextLine());
-                    System.out.print("Período: ");
+                    System.out.print("Período (Ex: 1º Semestre): ");
                     String period = scanner.nextLine();
 
                     Course course = new Course();
@@ -155,84 +168,74 @@ public class Main {
                     course.setPeriod(period);
 
                     CourseService.save(course);
-                    System.out.println("Disciplina cadastrada!");
+                    System.out.println("[SUCESSO] Disciplina '" + name + "' cadastrada com ID: " + course.getId());
 
                 } else if (op == 2) {
+                    System.out.println("\n--- LISTAGEM DE DISCIPLINAS ---");
                     CourseService.findAll().forEach(c ->
-                            System.out.println(c.getId() + " - " + c.getName() + " | Carga Horária: " + c.getWorkload() + "h")
+                            System.out.println("ID: " + c.getId() + " | Nome: " + c.getName() + " | Carga: " + c.getWorkload() + "h")
                     );
 
                 } else if (op == 3) {
-                    System.out.print("ID da Disciplina: ");
+                    System.out.print("Digite o ID da Disciplina: ");
                     int idC = Integer.parseInt(scanner.nextLine());
 
                     Course c = CourseService.findById(idC);
-                    System.out.println("\n=== ALUNOS EM: " + c.getName() + " ===");
+                    System.out.println("\n=== ALUNOS MATRICULADOS EM: " + c.getName() + " ===");
 
                     try {
                         List<Enrollment> matriculas = EnrollmentService.findByCourse(idC);
+                        if (matriculas.isEmpty()) throw new Exception();
                         for (Enrollment e : matriculas) {
                             Student s = StudentService.findById(e.getIdStudent());
                             System.out.println("- " + s.getName() + " (RA: " + s.getId() + ")");
                         }
                     } catch (Exception e) {
-                        System.out.println("[Nenhum aluno matriculado]");
+                        System.out.println("  [Nenhum aluno matriculado nesta disciplina]");
                     }
 
                 } else if (op == 4) {
-                    System.out.print("ID da Disciplina: ");
+                    System.out.print("ID da Disciplina que deseja editar: ");
                     int idC = Integer.parseInt(scanner.nextLine());
 
                     Course c = CourseService.findById(idC);
 
-                    System.out.print("Novo nome (" + c.getName() + "): ");
+                    System.out.print("Novo nome (Atual: " + c.getName() + "): ");
                     String name = scanner.nextLine();
 
-                    System.out.print("Nova Carga Horária (" + c.getWorkload() + "): ");
+                    System.out.print("Nova Carga Horária (Atual: " + c.getWorkload() + "): ");
                     String workloadStr = scanner.nextLine();
 
-                    System.out.print("Novo Período (" + c.getPeriod() + "): ");
+                    System.out.print("Novo Período (Atual: " + c.getPeriod() + "): ");
                     String period = scanner.nextLine();
 
                     Course courseUpdated = new Course();
                     courseUpdated.setId(idC);
-
-                    if (name.isBlank()) {
-                        courseUpdated.setName(c.getName());
-                    } else {
-                        courseUpdated.setName(name);
-                    }
-
-                    if (workloadStr.isBlank()) {
-                        courseUpdated.setWorkload(c.getWorkload());
-                    } else {
-                        courseUpdated.setWorkload(Double.parseDouble(workloadStr));
-                    }
-
-                    if (period.isBlank()) {
-                        courseUpdated.setPeriod(c.getPeriod());
-                    } else {
-                        courseUpdated.setPeriod(period);
-                    }
+                    courseUpdated.setName(name.isBlank() ? c.getName() : name);
+                    courseUpdated.setWorkload(workloadStr.isBlank() ? c.getWorkload() : Double.parseDouble(workloadStr));
+                    courseUpdated.setPeriod(period.isBlank() ? c.getPeriod() : period);
 
                     CourseService.update(courseUpdated);
-                    System.out.println("Disciplina atualizada!");
+                    System.out.println("[SUCESSO] Dados da disciplina ID " + idC + " (" + courseUpdated.getName() + ") foram atualizados.");
 
                 } else if (op == 5) {
-                    System.out.print("ID para excluir: ");
+                    System.out.print("ID da Disciplina que deseja excluir: ");
                     int idC = Integer.parseInt(scanner.nextLine());
 
+                    Course c = CourseService.findById(idC);
+                    String oldName = c.getName();
+
                     CourseService.delete(idC);
-                    System.out.println("Disciplina removida!");
+                    System.out.println("[SUCESSO] Disciplina '" + oldName + "' (ID: " + idC + ") removida do sistema.");
 
                 } else if (op != 0) {
-                    System.out.println("Opção inválida!");
+                    System.out.println("[AVISO] Opção inválida!");
                 }
 
             } catch (NumberFormatException e) {
-                System.err.println("\nEntrada inválida! Digite apenas números.");
+                System.err.println("\n[ERRO] Entrada inválida! Digite apenas números.");
             } catch (Exception e) {
-                System.err.println("\nERRO DISCIPLINA: " + e.getMessage());
+                System.err.println("\n[ERRO DISCIPLINA] " + e.getMessage());
             }
         }
     }
@@ -241,21 +244,21 @@ public class Main {
         int op = -1;
 
         while (op != 0) {
-            System.out.println("\n--- GERENCIAR MATRÍCULAS ---");
-            System.out.println("[1] Matricular Aluno");
-            System.out.println("[2] Lançar Nota");
-            System.out.println("[3] Boletim/Média");
-            System.out.println("[4] Desmatricular Aluno");
-            System.out.println("[0] Voltar");
+            System.out.println("\n--- MENU: MATRÍCULAS E NOTAS ---");
+            System.out.println("[1] Matricular Aluno em Disciplina");
+            System.out.println("[2] Lançar Nota de Prova");
+            System.out.println("[3] Ver Boletim do Aluno");
+            System.out.println("[4] Cancelar Matrícula (Desmatricular)");
+            System.out.println("[0] Voltar ao Menu Principal");
             System.out.print("Escolha: ");
 
             try {
                 op = Integer.parseInt(scanner.nextLine());
 
                 if (op == 1) {
-                    System.out.print("RA: ");
+                    System.out.print("RA do Aluno: ");
                     int ra = Integer.parseInt(scanner.nextLine());
-                    System.out.print("ID Disciplina: ");
+                    System.out.print("ID da Disciplina: ");
                     int idC = Integer.parseInt(scanner.nextLine());
 
                     Enrollment enrollment = new Enrollment();
@@ -267,57 +270,60 @@ public class Main {
                     Student student = StudentService.findById(ra);
                     Course course = CourseService.findById(idC);
 
-                    System.out.println("Aluno " + student.getName()
-                            + " foi matriculado na disciplina "
-                            + course.getId() + " (" + course.getName() + ").");
+                    System.out.println("[SUCESSO] Aluno '" + student.getName() + "' matriculado em '" + course.getName() + "'.");
 
                 } else if (op == 2) {
-                    System.out.print("RA: ");
+                    System.out.print("RA do Aluno: ");
                     int ra = Integer.parseInt(scanner.nextLine());
-                    System.out.print("ID Disciplina: ");
+                    System.out.print("ID da Disciplina: ");
                     int idC = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Prova (1/2): ");
+                    System.out.print("Qual prova? (1 ou 2): ");
                     int ex = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Nota: ");
+                    System.out.print("Valor da Nota: ");
                     double g = Double.parseDouble(scanner.nextLine());
 
                     EnrollmentService.updateGrade(ra, idC, ex, g);
-                    System.out.println("Nota salva!");
+                    System.out.println("[SUCESSO] Nota " + g + " lançada para a P" + ex + " do aluno (RA: " + ra + ") na disciplina ID: " + idC);
 
                 } else if (op == 3) {
-                    System.out.print("RA: ");
+                    System.out.print("RA do Aluno para o boletim: ");
                     int ra = Integer.parseInt(scanner.nextLine());
 
                     Student s = StudentService.findById(ra);
-                    System.out.println("\n=== BOLETIM: " + s.getName() + " ===");
+                    System.out.println("\n==========================================================================");
+                    System.out.println("BOLETIM ACADÊMICO: " + s.getName().toUpperCase() + " (RA: " + ra + ")");
+                    System.out.println("--------------------------------------------------------------------------");
+                    System.out.printf("%-20s | %-5s | %-5s | %-5s | %-10s%n", "DISCIPLINA", "P1", "P2", "MED", "STATUS");
+                    System.out.println("--------------------------------------------------------------------------");
 
                     EnrollmentService.findByStudent(ra).forEach(e -> {
                         Course c = CourseService.findById(e.getIdCourse());
-                        System.out.printf("%-15s | P1: %.1f | P2: %.1f | Média: %.1f | Status: %s%n",
-                                c.getName(),
+                        System.out.printf("%-20s | %-5.1f | %-5.1f | %-5.1f | %-10s%n",
+                                (c.getName().length() > 20 ? c.getName().substring(0, 17) + "..." : c.getName()),
                                 e.getGrade1(),
                                 e.getGrade2(),
                                 e.getAverage(),
                                 e.getStatus());
                     });
+                    System.out.println("==========================================================================");
 
                 } else if (op == 4) {
-                    System.out.print("RA: ");
+                    System.out.print("RA do Aluno: ");
                     int ra = Integer.parseInt(scanner.nextLine());
-                    System.out.print("ID Disciplina: ");
+                    System.out.print("ID da Disciplina: ");
                     int idC = Integer.parseInt(scanner.nextLine());
 
                     EnrollmentService.delete(ra, idC);
-                    System.out.println("Aluno desmatriculado com sucesso!");
+                    System.out.println("[SUCESSO] Matrícula removida: O aluno (RA: " + ra + ") não faz mais parte da disciplina (ID: " + idC + ").");
 
                 } else if (op != 0) {
-                    System.out.println("Opção inválida!");
+                    System.out.println("[AVISO] Opção inválida!");
                 }
 
             } catch (NumberFormatException e) {
-                System.err.println("\nEntrada inválida! Digite apenas números.");
+                System.err.println("\n[ERRO] Entrada inválida! Digite apenas números.");
             } catch (Exception e) {
-                System.err.println("\nERRO MATRÍCULA: " + e.getMessage());
+                System.err.println("\n[ERRO MATRÍCULA] " + e.getMessage());
             }
         }
     }
