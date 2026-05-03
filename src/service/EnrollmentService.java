@@ -1,5 +1,6 @@
 package service;
 
+import entity.Course;
 import entity.Enrollment;
 import exception.Exception;
 
@@ -33,6 +34,20 @@ public class EnrollmentService {
                     && enrollment.getIdCourse() == newEnrollment.getIdCourse()) {
                 throw new Exception("Este aluno já está matriculado nesta disciplina!");
             }
+        }
+
+        double totalWorkload = 0;
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment.getIdStudent() == newEnrollment.getIdStudent()) {
+                Course c = CourseService.findById(enrollment.getIdCourse());
+                totalWorkload += c.getWorkload();
+            }
+        }
+
+        double newCourseWorkload = CourseService.findById(newEnrollment.getIdCourse()).getWorkload();
+
+        if (totalWorkload + newCourseWorkload > 300) {
+            throw new Exception("Carga horária total ultrapassa 300h no semestre. Carga atual: " + totalWorkload + "h + Nova disciplina: " + newCourseWorkload + "h");
         }
 
         newEnrollment.setIdEnrollment(generateIdEnrollment());
