@@ -2,6 +2,7 @@ package service;
 
 import entity.Course;
 import entity.Enrollment;
+import entity.Student;
 import exception.Exception;
 
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ public class EnrollmentService {
     }
 
     public static Enrollment save(Enrollment newEnrollment){
-        StudentService.findById(newEnrollment.getIdStudent());
-        CourseService.findById(newEnrollment.getIdCourse());
+        Student student = StudentService.findById(newEnrollment.getIdStudent());
+        Course course = CourseService.findById(newEnrollment.getIdCourse());
 
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getIdStudent() == newEnrollment.getIdStudent()
@@ -36,24 +37,15 @@ public class EnrollmentService {
             }
         }
 
-        double totalWorkload = 0;
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getIdStudent() == newEnrollment.getIdStudent()) {
-                Course c = CourseService.findById(enrollment.getIdCourse());
-                totalWorkload += c.getWorkload();
-            }
-        }
-
-        double newCourseWorkload = CourseService.findById(newEnrollment.getIdCourse()).getWorkload();
-
-        if (totalWorkload + newCourseWorkload > 300) {
-            throw new Exception("Carga horária total ultrapassa 300h no semestre. Carga atual: " + totalWorkload + "h + Nova disciplina: " + newCourseWorkload + "h");
+        if (student.getWorkload() + course.getWorkload() > 300) {
+            throw new Exception("Carga horária excede o limite de 300h no semestre. " +
+                    "Atual: " + student.getWorkload() + "h | Nova disciplina: " + course.getWorkload() + "h");
         }
 
         newEnrollment.setIdEnrollment(generateIdEnrollment());
         enrollments.add(newEnrollment);
-
         FileService.saveEnrollments(enrollments);
+        StudentService.updateWorkload(newEnrollment.getIdStudent(), course.getWorkload());
 
         return newEnrollment;
     }
@@ -102,10 +94,12 @@ public class EnrollmentService {
 
     public static void delete(int idStudent, int idCourse){
         Enrollment enrollment = findEnrollment(idStudent, idCourse);
+        Course course = CourseService.findById(idCourse);
 
         enrollments.remove(enrollment);
-
         FileService.saveEnrollments(enrollments);
+        double removedWorkload = -course.getWorkload();
+        StudentService.updateWorkload(idStudent, removedWorkload);
     }
 
     public static void updateGrade(int idStudent, int idCourse, int examNumber, double value){

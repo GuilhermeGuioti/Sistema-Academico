@@ -4,6 +4,7 @@ package entity;
 public class Student {
     private int id;
     private String name;
+    private double workload;
 
     public Student() {}
 
@@ -26,6 +27,14 @@ public class Student {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getWorkload() {
+        return workload;
+    }
+
+    public void setWorkload(double workload) {
+        this.workload = workload;
     }
 
     @Override

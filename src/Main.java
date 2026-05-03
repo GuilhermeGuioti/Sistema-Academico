@@ -76,7 +76,7 @@ public class Main {
                 } else if (op == 2) {
                     System.out.println("\n--- LISTAGEM DE ALUNOS ---");
                     StudentService.findAll().forEach(s ->
-                            System.out.println("RA: " + s.getId() + " | Nome: " + s.getName())
+                            System.out.println("RA: " + s.getId() + " | Nome: " + s.getName() + " | Carga: " + s.getWorkload() + "h")
                     );
 
                 } else if (op == 3) {
@@ -87,6 +87,7 @@ public class Main {
                     System.out.println("\n=== PERFIL DO ALUNO ===");
                     System.out.println("RA: " + s.getId());
                     System.out.println("Nome: " + s.getName());
+                    System.out.println("Carga Horária no Semestre: " + s.getWorkload() + "h / 300h");
                     System.out.println("Disciplinas:");
 
                     try {
@@ -249,6 +250,7 @@ public class Main {
             System.out.println("[2] Lançar Nota de Prova");
             System.out.println("[3] Ver Boletim do Aluno");
             System.out.println("[4] Cancelar Matrícula (Desmatricular)");
+            System.out.println("[5] Encerrar Semestre (Zerar Carga Horária)");
             System.out.println("[0] Voltar ao Menu Principal");
             System.out.print("Escolha: ");
 
@@ -315,6 +317,16 @@ public class Main {
 
                     EnrollmentService.delete(ra, idC);
                     System.out.println("[SUCESSO] Matrícula removida: O aluno (RA: " + ra + ") não faz mais parte da disciplina (ID: " + idC + ").");
+
+                } else if (op == 5) {
+                    System.out.print("Confirma o encerramento do semestre? Isso zerará a carga horária de todos os alunos. (s/n): ");
+                    String confirm = scanner.nextLine();
+                    if (confirm.equalsIgnoreCase("s")) {
+                        StudentService.resetAllWorkloads();
+                        System.out.println("[SUCESSO] Semestre encerrado. Carga horária de todos os alunos foi zerada.");
+                    } else {
+                        System.out.println("[CANCELADO] Operação cancelada.");
+                    }
 
                 } else if (op != 0) {
                     System.out.println("[AVISO] Opção inválida!");

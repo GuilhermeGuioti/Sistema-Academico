@@ -23,7 +23,7 @@ public class FileService {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(STUDENT_FILE))) {
             for (Student s : students) {
-                writer.write(s.getId() + ";" + s.getName());
+                writer.write(s.getId() + ";" + s.getName() + ";" + s.getWorkload());
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -43,8 +43,11 @@ public class FileService {
                 String[] data = line.split(";");
                 int id = Integer.parseInt(data[0]);
                 String name = data[1];
+                double workload = data.length > 2 ? Double.parseDouble(data[2]) : 0.0;
 
-                students.add(new Student(id, name));
+                Student student = new Student(id, name);
+                student.setWorkload(workload);
+                students.add(student);
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar alunos: " + e.getMessage());

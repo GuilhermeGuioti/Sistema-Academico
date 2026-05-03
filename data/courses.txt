@@ -1,6 +1,3 @@
-1;calculo 2;30.0;noturno
-2;jogos digitais;50.0;diurno
-3;História;30.0;not
-4;nja];30.0;okf
-5;Sistemas da Informacao;30.0;Noturno
-6;Arduino;34.0;1 semestre
+1;Matemática Discreta;290.0;1
+2;Programação;5.0;1
+3;Jogos Digitais;50.0;1

@@ -87,4 +87,17 @@ public class StudentService {
 
         return student;
     }
+
+    public static void updateWorkload(int idStudent, double delta) {
+        Student student = findById(idStudent);
+        student.setWorkload(student.getWorkload() + delta);
+        FileService.saveStudents(students);
+    }
+
+    public static void resetAllWorkloads() {
+        for (Student student : students) {
+            student.setWorkload(0);
+        }
+        FileService.saveStudents(students);
+    }
 }
