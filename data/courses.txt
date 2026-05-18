@@ -1,3 +1,4 @@
 1;Matemática Discreta;290.0;1
 2;Programação;5.0;1
 3;Jogos Digitais;50.0;1
+4;poo;60.0;5

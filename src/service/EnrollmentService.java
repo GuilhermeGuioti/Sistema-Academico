@@ -18,12 +18,11 @@ public class EnrollmentService {
     }
 
     public static int generateIdEnrollment() {
-        if(enrollments.isEmpty()){
-            return 1;
+        int maxId = 0;
+        for (Enrollment e : enrollments) {
+            if (e.getIdEnrollment() > maxId) maxId = e.getIdEnrollment();
         }
-        Enrollment lastEnrollment = enrollments.get(enrollments.size() - 1);
-
-        return lastEnrollment.getIdEnrollment() + 1;
+        return maxId + 1;
     }
 
     public static Enrollment save(Enrollment newEnrollment){
@@ -69,10 +68,6 @@ public class EnrollmentService {
             }
         }
 
-        if (result.isEmpty()) {
-            throw new Exception("Este aluno não possui matrículas.");
-        }
-
         return result;
     }
 
@@ -83,10 +78,6 @@ public class EnrollmentService {
             if (enrollment.getIdCourse() == idCourse) {
                 result.add(enrollment);
             }
-        }
-
-        if (result.isEmpty()) {
-            throw new Exception("Não há alunos matriculados nesta disciplina.");
         }
 
         return result;
@@ -100,6 +91,30 @@ public class EnrollmentService {
         FileService.saveEnrollments(enrollments);
         double removedWorkload = -course.getWorkload();
         StudentService.updateWorkload(idStudent, removedWorkload);
+    }
+
+    public static void deleteByStudent(int idStudent) {
+        enrollments.removeIf(e -> e.getIdStudent() == idStudent);
+        FileService.saveEnrollments(enrollments);
+    }
+
+    public static void deleteByCourse(int idCourse) {
+        Course course = CourseService.findById(idCourse);
+        double courseWorkload = course.getWorkload();
+
+        List<Enrollment> toRemove = new ArrayList<>();
+        for (Enrollment e : enrollments) {
+            if (e.getIdCourse() == idCourse) {
+                toRemove.add(e);
+            }
+        }
+
+        for (Enrollment e : toRemove) {
+            enrollments.remove(e);
+            StudentService.updateWorkload(e.getIdStudent(), -courseWorkload);
+        }
+
+        FileService.saveEnrollments(enrollments);
     }
 
     public static void updateGrade(int idStudent, int idCourse, int examNumber, double value){

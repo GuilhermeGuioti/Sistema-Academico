@@ -16,13 +16,11 @@ public class CourseService {
     }
 
     public static int generateIdCourse() {
-        if(courses.isEmpty()){
-            return 1;
+        int maxId = 0;
+        for (Course c : courses) {
+            if (c.getId() > maxId) maxId = c.getId();
         }
-
-        Course lastCourse = courses.get(courses.size() - 1);
-
-        return lastCourse.getId() + 1;
+        return maxId + 1;
     }
 
     public static Course save(Course newCourse){
@@ -53,10 +51,6 @@ public class CourseService {
     }
 
     public static List<Course> findAll() {
-        if (courses.isEmpty()) {
-            throw new Exception("Não há disciplinas");
-        }
-
         return courses;
     }
 
@@ -72,6 +66,8 @@ public class CourseService {
 
     public static void delete(int id){
         Course course = findById(id);
+
+        EnrollmentService.deleteByCourse(id);
 
         courses.remove(course);
 

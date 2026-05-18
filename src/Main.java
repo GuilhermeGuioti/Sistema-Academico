@@ -75,9 +75,14 @@ public class Main {
 
                 } else if (op == 2) {
                     System.out.println("\n--- LISTAGEM DE ALUNOS ---");
-                    StudentService.findAll().forEach(s ->
-                            System.out.println("RA: " + s.getId() + " | Nome: " + s.getName() + " | Carga: " + s.getWorkload() + "h")
-                    );
+                    List<Student> all = StudentService.findAll();
+                    if (all.isEmpty()) {
+                        System.out.println("[INFO] Nenhum aluno cadastrado.");
+                    } else {
+                        all.forEach(s ->
+                                System.out.println("RA: " + s.getId() + " | Nome: " + s.getName() + " | Carga: " + s.getWorkload() + "h")
+                        );
+                    }
 
                 } else if (op == 3) {
                     System.out.print("Digite o RA para consulta: ");
@@ -90,15 +95,14 @@ public class Main {
                     System.out.println("Carga Horária no Semestre: " + s.getWorkload() + "h / 300h");
                     System.out.println("Disciplinas:");
 
-                    try {
-                        List<Enrollment> m = EnrollmentService.findByStudent(ra);
-                        if (m.isEmpty()) throw new Exception();
+                    List<Enrollment> m = EnrollmentService.findByStudent(ra);
+                    if (m.isEmpty()) {
+                        System.out.println("  [Nenhuma matrícula encontrada]");
+                    } else {
                         m.forEach(e -> {
                             Course c = CourseService.findById(e.getIdCourse());
                             System.out.println("  - " + c.getName() + " [Status: " + e.getStatus() + "]");
                         });
-                    } catch (Exception e) {
-                        System.out.println("  [Nenhuma matrícula encontrada]");
                     }
 
                 } else if (op == 4) {
@@ -173,9 +177,14 @@ public class Main {
 
                 } else if (op == 2) {
                     System.out.println("\n--- LISTAGEM DE DISCIPLINAS ---");
-                    CourseService.findAll().forEach(c ->
-                            System.out.println("ID: " + c.getId() + " | Nome: " + c.getName() + " | Carga: " + c.getWorkload() + "h")
-                    );
+                    List<Course> all = CourseService.findAll();
+                    if (all.isEmpty()) {
+                        System.out.println("[INFO] Nenhuma disciplina cadastrada.");
+                    } else {
+                        all.forEach(c ->
+                                System.out.println("ID: " + c.getId() + " | Nome: " + c.getName() + " | Carga: " + c.getWorkload() + "h")
+                        );
+                    }
 
                 } else if (op == 3) {
                     System.out.print("Digite o ID da Disciplina: ");
@@ -184,15 +193,14 @@ public class Main {
                     Course c = CourseService.findById(idC);
                     System.out.println("\n=== ALUNOS MATRICULADOS EM: " + c.getName() + " ===");
 
-                    try {
-                        List<Enrollment> matriculas = EnrollmentService.findByCourse(idC);
-                        if (matriculas.isEmpty()) throw new Exception();
+                    List<Enrollment> matriculas = EnrollmentService.findByCourse(idC);
+                    if (matriculas.isEmpty()) {
+                        System.out.println("  [Nenhum aluno matriculado nesta disciplina]");
+                    } else {
                         for (Enrollment e : matriculas) {
                             Student s = StudentService.findById(e.getIdStudent());
                             System.out.println("- " + s.getName() + " (RA: " + s.getId() + ")");
                         }
-                    } catch (Exception e) {
-                        System.out.println("  [Nenhum aluno matriculado nesta disciplina]");
                     }
 
                 } else if (op == 4) {
@@ -298,15 +306,20 @@ public class Main {
                     System.out.printf("%-20s | %-5s | %-5s | %-5s | %-10s%n", "DISCIPLINA", "P1", "P2", "MED", "STATUS");
                     System.out.println("--------------------------------------------------------------------------");
 
-                    EnrollmentService.findByStudent(ra).forEach(e -> {
-                        Course c = CourseService.findById(e.getIdCourse());
-                        System.out.printf("%-20s | %-5.1f | %-5.1f | %-5.1f | %-10s%n",
-                                (c.getName().length() > 20 ? c.getName().substring(0, 17) + "..." : c.getName()),
-                                e.getGrade1(),
-                                e.getGrade2(),
-                                e.getAverage(),
-                                e.getStatus());
-                    });
+                    List<Enrollment> boletim = EnrollmentService.findByStudent(ra);
+                    if (boletim.isEmpty()) {
+                        System.out.println("  [Nenhuma matrícula encontrada]");
+                    } else {
+                        boletim.forEach(e -> {
+                            Course c = CourseService.findById(e.getIdCourse());
+                            System.out.printf("%-20s | %-5.1f | %-5.1f | %-5.1f | %-10s%n",
+                                    (c.getName().length() > 20 ? c.getName().substring(0, 17) + "..." : c.getName()),
+                                    e.getGrade1(),
+                                    e.getGrade2(),
+                                    e.getAverage(),
+                                    e.getStatus());
+                        });
+                    }
                     System.out.println("==========================================================================");
 
                 } else if (op == 4) {

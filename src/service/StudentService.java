@@ -17,7 +17,7 @@ public class StudentService {
         students.addAll(loaded);
     }
 
-    public static int genereteRA() {
+    public static int generateRA() {
         Random rand = new Random();
         int RA = -1;
 
@@ -39,7 +39,7 @@ public class StudentService {
             throw new Exception("O nome do aluno não pode ser vazio.");
         }
 
-        int id = genereteRA();
+        int id = generateRA();
         newStudent.setId(id);
 
         students.add(newStudent);
@@ -50,10 +50,6 @@ public class StudentService {
     }
 
     public static List<Student> findAll(){
-        if(students.isEmpty()){
-            throw new Exception("Não há alunos");
-        }
-
         return students;
     }
 
@@ -70,6 +66,8 @@ public class StudentService {
 
     public static void delete(int id) {
         Student student = findById(id);
+
+        EnrollmentService.deleteByStudent(id);
 
         students.remove(student);
 
